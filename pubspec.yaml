@@ -34,8 +34,9 @@ dependencies:
   # Multimodal interaction packages
   just_audio: ^0.9.36        # Audio playback
   sensors_plus: ^4.0.2       # Accelerometer for tilt detection
-  vibration: ^1.8.4          # Haptic feedback
+  vibration: ^3.1.5          # Haptic feedback
   provider: ^6.1.1           # State management (MVVM)
+  flutter_screenutil: ^5.9.3 # Responsive design scaling
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

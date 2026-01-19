@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../theme/app_colors.dart';
@@ -26,6 +27,12 @@ class _CaklempongViewState extends State<CaklempongView> {
     super.initState();
     _viewModel = CaklempongViewModel();
 
+    // Lock to landscape for instrument play
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     // Initialize the ViewModel after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _viewModel.initialize();
@@ -35,6 +42,13 @@ class _CaklempongViewState extends State<CaklempongView> {
   @override
   void dispose() {
     _viewModel.dispose();
+
+    // Restore portrait orientation when leaving
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     super.dispose();
   }
 

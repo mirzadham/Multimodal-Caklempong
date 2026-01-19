@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/song_model.dart';
 import '../theme/app_colors.dart';
 import 'tutorial_view.dart';
@@ -33,7 +34,7 @@ class SongListView extends StatelessWidget {
             ),
           ),
           child: ListView.builder(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24.w),
             itemCount: SongModel.availableSongs.length,
             itemBuilder: (context, index) {
               final song = SongModel.availableSongs[index];
@@ -62,11 +63,11 @@ class _SongCard extends StatelessWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(20),
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: AppColors.charcoalLight.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: AppColors.metallicGold.withValues(alpha: 0.3),
             width: 1,
@@ -74,8 +75,8 @@ class _SongCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              blurRadius: 8.r,
+              offset: Offset(0, 4.h),
             ),
           ],
         ),
@@ -83,25 +84,25 @@ class _SongCard extends StatelessWidget {
           children: [
             // Music icon
             Container(
-              width: 56,
-              height: 56,
+              width: 56.w,
+              height: 56.w,
               decoration: BoxDecoration(
                 gradient: AppColors.gongGradient,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.metallicGold.withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    blurRadius: 8.r,
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.music_note,
                 color: AppColors.charcoal,
-                size: 28,
+                size: 28.sp,
               ),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: 20.w),
             // Song info
             Expanded(
               child: Column(
@@ -109,22 +110,22 @@ class _SongCard extends StatelessWidget {
                 children: [
                   Text(
                     song.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Row(
                     children: [
                       _buildDifficultyIndicator(),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16.w),
                       Text(
                         '${song.notes.length} notes',
                         style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ],
@@ -136,7 +137,7 @@ class _SongCard extends StatelessWidget {
             Icon(
               Icons.play_circle_fill,
               color: AppColors.metallicGold,
-              size: 40,
+              size: 40.sp,
             ),
           ],
         ),
@@ -151,17 +152,17 @@ class _SongCard extends StatelessWidget {
     final color = colors[song.difficulty - 1];
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
         ),
       ),

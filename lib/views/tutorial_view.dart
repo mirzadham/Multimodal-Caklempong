@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../models/song_model.dart';
@@ -27,6 +28,12 @@ class _TutorialViewState extends State<TutorialView> {
     _caklempongVM = CaklempongViewModel();
     _tutorialVM = TutorialViewModel(song: widget.song);
 
+    // Lock to landscape for instrument play
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _caklempongVM.initialize();
     });
@@ -36,6 +43,13 @@ class _TutorialViewState extends State<TutorialView> {
   void dispose() {
     _caklempongVM.dispose();
     _tutorialVM.dispose();
+
+    // Restore portrait orientation when leaving
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     super.dispose();
   }
 
