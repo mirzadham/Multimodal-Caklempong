@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 import 'theme/app_theme.dart';
-import 'viewmodels/caklempong_viewmodel.dart';
-import 'views/caklempong_view.dart';
+import 'views/home_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock to portrait mode for optimal instrument layout
+  // Lock to landscape mode for optimal instrument layout
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
 
   // Set system UI overlay style
@@ -34,14 +32,11 @@ class PocketCaklempongApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CaklempongViewModel(),
-      child: MaterialApp(
-        title: 'Pocket Caklempong',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.theme,
-        home: const CaklempongView(),
-      ),
+    return MaterialApp(
+      title: 'Pocket Caklempong',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
+      home: const HomeView(),
     );
   }
 }

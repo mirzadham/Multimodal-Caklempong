@@ -19,24 +19,40 @@ class CaklempongView extends StatefulWidget {
 }
 
 class _CaklempongViewState extends State<CaklempongView> {
+  late CaklempongViewModel _viewModel;
+
   @override
   void initState() {
     super.initState();
+    _viewModel = CaklempongViewModel();
 
     // Initialize the ViewModel after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CaklempongViewModel>().initialize();
+      _viewModel.initialize();
     });
   }
 
   @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.charcoal,
-      appBar: _buildAppBar(),
-      body: SafeArea(
-        child: Stack(
-          children: [_buildBackground(), _buildGongGrid(), _buildMuteOverlay()],
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Scaffold(
+        backgroundColor: AppColors.charcoal,
+        appBar: _buildAppBar(),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              _buildBackground(),
+              _buildGongGrid(),
+              _buildMuteOverlay(),
+            ],
+          ),
         ),
       ),
     );
@@ -44,7 +60,11 @@ class _CaklempongViewState extends State<CaklempongView> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text('POCKET CAKLEMPONG'),
+      title: const Text('FREE PLAY'),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.pop(context),
+      ),
       actions: [
         Consumer<CaklempongViewModel>(
           builder: (context, vm, _) {
@@ -88,39 +108,67 @@ class _CaklempongViewState extends State<CaklempongView> {
             final screenWidth = constraints.maxWidth;
             final screenHeight = constraints.maxHeight;
 
-            // 4 gongs per row, 2 rows
-            const crossAxisCount = 4;
-            const mainAxisCount = 2;
+            // Landscape mode: 4 gongs per row, 2 rows
+            const gongsPerRow = 4;
+            const rowCount = 2;
+            const horizontalSpacing = 16.0;
+            const verticalSpacing = 20.0;
 
             // Calculate gong size with padding
-            final availableWidth = screenWidth - 40; // 20px padding each side
-            final availableHeight =
-                screenHeight - 60; // Extra padding for spacing
+            final availableWidth = screenWidth - 48; // 24px padding each side
+            final availableHeight = screenHeight - 40; // Vertical padding
 
-            final gongSizeByWidth = availableWidth / crossAxisCount - 16;
-            final gongSizeByHeight = availableHeight / mainAxisCount - 32;
+            // Size based on fitting 4 gongs per row
+            final gongSizeByWidth =
+                (availableWidth - (gongsPerRow - 1) * horizontalSpacing) /
+                gongsPerRow;
+            final gongSizeByHeight =
+                (availableHeight - verticalSpacing) / rowCount;
 
             final gongSize = gongSizeByWidth < gongSizeByHeight
                 ? gongSizeByWidth
                 : gongSizeByHeight;
 
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 24,
-                  alignment: WrapAlignment.center,
-                  children: viewModel.gongs.map((gong) {
-                    return GongButton(
+            // Split gongs into two rows
+            final firstRow = viewModel.gongs.take(4).toList();
+            final secondRow = viewModel.gongs.skip(4).toList();
+
+            Widget buildGongRow(List gongs) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: gongs.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final gong = entry.value;
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      right: index < gongsPerRow - 1 ? horizontalSpacing : 0,
+                    ),
+                    child: GongButton(
                       gongId: gong.id,
                       note: gong.note,
                       isPressed: viewModel.isGongPressed(gong.id),
                       size: gongSize.clamp(60, 120),
                       onPressed: () => viewModel.onGongPressed(gong.id),
                       onReleased: () => viewModel.onGongReleased(gong.id),
-                    );
-                  }).toList(),
+                    ),
+                  );
+                }).toList(),
+              );
+            }
+
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildGongRow(firstRow),
+                    SizedBox(height: verticalSpacing),
+                    buildGongRow(secondRow),
+                  ],
                 ),
               ),
             );

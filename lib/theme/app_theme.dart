@@ -42,6 +42,8 @@ abstract class AppTheme {
         statusBarIconBrightness: Brightness.light,
       ),
       titleTextStyle: TextStyle(
+        fontFamily: 'serif',
+        fontStyle: FontStyle.italic,
         color: AppColors.metallicGold,
         fontSize: 24,
         fontWeight: FontWeight.bold,

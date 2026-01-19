@@ -18,6 +18,9 @@ class GongButton extends StatefulWidget {
   /// Whether this gong is currently pressed
   final bool isPressed;
 
+  /// Whether this gong is highlighted (tutorial mode)
+  final bool isHighlighted;
+
   /// Callback when gong is pressed down
   final VoidCallback? onPressed;
 
@@ -32,6 +35,7 @@ class GongButton extends StatefulWidget {
     required this.gongId,
     required this.note,
     this.isPressed = false,
+    this.isHighlighted = false,
     this.onPressed,
     this.onReleased,
     this.size = 100,
@@ -101,11 +105,15 @@ class _GongButtonState extends State<GongButton>
                 : AppColors.gongGradient,
             boxShadow: _buildShadows(),
             border: Border.all(
-              color: widget.isPressed ? AppColors.maroon : AppColors.darkBronze,
-              width: 3,
+              color: widget.isHighlighted
+                  ? Colors.white
+                  : widget.isPressed
+                  ? AppColors.maroon
+                  : AppColors.darkBronze,
+              width: widget.isHighlighted ? 4 : 3,
             ),
           ),
-          child: Center(child: _buildNoteLabel()),
+          child: const SizedBox.shrink(),
         ),
       ),
     );
@@ -136,24 +144,13 @@ class _GongButtonState extends State<GongButton>
           blurRadius: 20,
           spreadRadius: 3,
         ),
+      // Highlight glow for tutorial mode
+      if (widget.isHighlighted)
+        BoxShadow(
+          color: Colors.white.withValues(alpha: 0.8),
+          blurRadius: 25,
+          spreadRadius: 5,
+        ),
     ];
-  }
-
-  Widget _buildNoteLabel() {
-    return Text(
-      widget.note,
-      style: TextStyle(
-        color: AppColors.charcoal.withValues(alpha: 0.8),
-        fontSize: widget.size * 0.25,
-        fontWeight: FontWeight.bold,
-        shadows: [
-          Shadow(
-            color: AppColors.lightGold.withValues(alpha: 0.5),
-            blurRadius: 2,
-            offset: const Offset(1, 1),
-          ),
-        ],
-      ),
-    );
   }
 }
