@@ -129,7 +129,7 @@ class CaklempongViewModel extends ChangeNotifier {
 
   Future<void> _initializeHaptics() async {
     try {
-      _hasVibrator = await Vibration.hasVibrator() ?? false;
+      _hasVibrator = await Vibration.hasVibrator();
     } catch (e) {
       debugPrint('Failed to check vibrator: $e');
       _hasVibrator = false;
