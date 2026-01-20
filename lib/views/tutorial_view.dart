@@ -76,6 +76,7 @@ class _TutorialViewState extends State<TutorialView> {
               _buildScoreDisplay(),
               _buildAccuracyDisplay(),
               _buildCompletionOverlay(),
+              _buildProgressBar(),
             ],
           ),
         ),
@@ -185,6 +186,34 @@ class _TutorialViewState extends State<TutorialView> {
                 ),
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildProgressBar() {
+    return Consumer<TutorialViewModel>(
+      builder: (context, vm, _) {
+        // Only show progress bar when playing
+        if (!vm.isPlaying) {
+          return const SizedBox.shrink();
+        }
+
+        return Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.zero,
+            child: LinearProgressIndicator(
+              value: vm.progress,
+              backgroundColor: AppColors.charcoalLight.withValues(alpha: 0.3),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.metallicGold,
+              ),
+              minHeight: 4,
+            ),
           ),
         );
       },
