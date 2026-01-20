@@ -69,11 +69,12 @@ class _TutorialViewState extends State<TutorialView> {
               _buildBackground(),
               Column(
                 children: [
-                  _buildScoreBar(),
                   Expanded(child: _buildGongGrid()),
                   _buildControls(),
                 ],
               ),
+              _buildScoreDisplay(),
+              _buildAccuracyDisplay(),
               _buildCompletionOverlay(),
             ],
           ),
@@ -89,6 +90,104 @@ class _TutorialViewState extends State<TutorialView> {
         icon: const Icon(Icons.close),
         onPressed: () => Navigator.pop(context),
       ),
+      actions: [
+        Consumer<TutorialViewModel>(
+          builder: (context, vm, _) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'PROGRESS',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 10,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  Text(
+                    '${vm.currentNoteIndex}/${vm.totalNotes}',
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScoreDisplay() {
+    return Consumer<TutorialViewModel>(
+      builder: (context, vm, _) {
+        return Positioned(
+          top: 80,
+          left: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'SCORE',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Text(
+                '${vm.score}',
+                style: const TextStyle(
+                  color: AppColors.metallicGold,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAccuracyDisplay() {
+    return Consumer<TutorialViewModel>(
+      builder: (context, vm, _) {
+        return Positioned(
+          bottom: 80,
+          right: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'ACCURACY',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Text(
+                '${vm.accuracy.toStringAsFixed(0)}%',
+                style: TextStyle(
+                  color: vm.accuracy >= 80
+                      ? Colors.green
+                      : vm.accuracy >= 50
+                      ? Colors.orange
+                      : Colors.red,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -106,109 +205,6 @@ class _TutorialViewState extends State<TutorialView> {
           stops: const [0.0, 0.5, 1.0],
         ),
       ),
-    );
-  }
-
-  Widget _buildScoreBar() {
-    return Consumer<TutorialViewModel>(
-      builder: (context, vm, _) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Column(
-            children: [
-              // Score and stats row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Score
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'SCORE',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      Text(
-                        '${vm.score}',
-                        style: const TextStyle(
-                          color: AppColors.metallicGold,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Progress
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'PROGRESS',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      Text(
-                        '${vm.currentNoteIndex}/${vm.totalNotes}',
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Accuracy
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'ACCURACY',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      Text(
-                        '${vm.accuracy.toStringAsFixed(0)}%',
-                        style: TextStyle(
-                          color: vm.accuracy >= 80
-                              ? Colors.green
-                              : vm.accuracy >= 50
-                              ? Colors.orange
-                              : Colors.red,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // Progress bar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: vm.progress,
-                  backgroundColor: AppColors.charcoalLight,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    AppColors.metallicGold,
-                  ),
-                  minHeight: 6,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
