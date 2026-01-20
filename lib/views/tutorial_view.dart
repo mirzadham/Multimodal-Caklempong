@@ -374,51 +374,53 @@ class _TutorialViewState extends State<TutorialView> {
         return Container(
           color: AppColors.black.withValues(alpha: 0.85),
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.celebration,
-                  size: 80,
-                  color: AppColors.metallicGold,
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'SONG COMPLETE!',
-                  style: TextStyle(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.celebration,
+                    size: 60,
                     color: AppColors.metallicGold,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
                   ),
-                ),
-                const SizedBox(height: 32),
-                // Stats
-                _StatRow(label: 'Score', value: '${vm.score}'),
-                _StatRow(label: 'Hits', value: '${vm.hits}/${vm.totalNotes}'),
-                _StatRow(
-                  label: 'Accuracy',
-                  value: '${vm.accuracy.toStringAsFixed(1)}%',
-                ),
-                const SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _ControlButton(
-                      icon: Icons.replay,
-                      label: 'RETRY',
-                      onTap: () => vm.start(),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'SONG COMPLETE!',
+                    style: TextStyle(
+                      color: AppColors.metallicGold,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
                     ),
-                    const SizedBox(width: 20),
-                    _ControlButton(
-                      icon: Icons.home,
-                      label: 'MENU',
-                      onTap: () => Navigator.pop(context),
-                      isSecondary: true,
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Stats
+                  _StatRow(label: 'Score', value: '${vm.score}'),
+                  _StatRow(label: 'Hits', value: '${vm.hits}/${vm.totalNotes}'),
+                  _StatRow(
+                    label: 'Accuracy',
+                    value: '${vm.accuracy.toStringAsFixed(1)}%',
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _ControlButton(
+                        icon: Icons.replay,
+                        label: 'RETRY',
+                        onTap: () => vm.start(),
+                      ),
+                      const SizedBox(width: 12),
+                      _ControlButton(
+                        icon: Icons.home,
+                        label: 'MENU',
+                        onTap: () => Navigator.pop(context),
+                        isSecondary: true,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -445,7 +447,7 @@ class _ControlButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
           gradient: isSecondary
               ? null
@@ -469,18 +471,18 @@ class _ControlButton extends StatelessWidget {
             Icon(
               icon,
               color: isSecondary ? AppColors.textSecondary : AppColors.charcoal,
-              size: 22,
+              size: 18,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
                 color: isSecondary
                     ? AppColors.textSecondary
                     : AppColors.charcoal,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 1,
+                letterSpacing: 0.5,
               ),
             ),
           ],
@@ -499,26 +501,29 @@ class _StatRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: 100,
+            width: 80,
             child: Text(
               label,
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
               textAlign: TextAlign.right,
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
           SizedBox(
-            width: 100,
+            width: 80,
             child: Text(
               value,
               style: const TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 22,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
