@@ -7,8 +7,8 @@ import '../theme/app_colors.dart';
 import '../viewmodels/caklempong_viewmodel.dart';
 import '../viewmodels/tutorial_viewmodel.dart';
 import '../widgets/gong_button.dart';
+import '../widgets/individual_gong_frame.dart';
 
-/// Tutorial play screen with guided gong highlighting.
 class TutorialView extends StatefulWidget {
   final SongModel song;
 
@@ -217,56 +217,92 @@ class _TutorialViewState extends State<TutorialView> {
       builder: (context, caklempongVM, tutorialVM, _) {
         return LayoutBuilder(
           builder: (context, constraints) {
+            // Calculate optimal gong size based on screen
             final screenWidth = constraints.maxWidth;
             final screenHeight = constraints.maxHeight;
 
+            // Landscape mode: 4 gongs per row, 2 rows
             const gongsPerRow = 4;
             const rowCount = 2;
-            const horizontalSpacing = 16.0;
-            const verticalSpacing = 20.0;
+            const horizontalSpacing = 8.0;
+            const verticalSpacing = 24.0;
 
-            final availableWidth = screenWidth - 48;
-            final availableHeight = screenHeight - 40;
+            // Calculate gong size with padding
+            final availableWidth =
+                screenWidth -
+                48 -
+                24; // 24px screen padding + 24px container padding
+            final availableHeight = screenHeight - 60;
 
             final gongSizeByWidth =
-                (availableWidth - (gongsPerRow - 1) * horizontalSpacing) /
+                (availableWidth -
+                    (gongsPerRow * 24) -
+                    (gongsPerRow - 1) * horizontalSpacing) /
                 gongsPerRow;
+
             final gongSizeByHeight =
-                (availableHeight - verticalSpacing) / rowCount;
+                (availableHeight - (rowCount * 24) - verticalSpacing) /
+                rowCount;
 
             final gongSize = gongSizeByWidth < gongSizeByHeight
                 ? gongSizeByWidth
                 : gongSizeByHeight;
 
+            final clampedGongSize = gongSize.clamp(40.0, 110.0);
+
             final firstRow = caklempongVM.gongs.take(4).toList();
             final secondRow = caklempongVM.gongs.skip(4).toList();
 
             Widget buildGongRow(List gongs) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: gongs.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final gong = entry.value;
-                  final isHighlighted = tutorialVM.highlightedGongId == gong.id;
+              return Container(
+                // Add a "Base Plate" behind the row to connect them visually
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1B1210), // Dark connector base
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      offset: const Offset(0, 4),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: gongs.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final gong = entry.value;
+                    final isHighlighted =
+                        tutorialVM.highlightedGongId == gong.id;
 
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: index < gongsPerRow - 1 ? horizontalSpacing : 0,
-                    ),
-                    child: GongButton(
-                      gongId: gong.id,
-                      note: gong.note,
-                      isPressed: caklempongVM.isGongPressed(gong.id),
-                      isHighlighted: isHighlighted,
-                      size: gongSize.clamp(60, 120),
-                      onPressed: () {
-                        caklempongVM.onGongPressed(gong.id);
-                        tutorialVM.onGongHit(gong.id);
-                      },
-                      onReleased: () => caklempongVM.onGongReleased(gong.id),
-                    ),
-                  );
-                }).toList(),
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: index < gongsPerRow - 1 ? horizontalSpacing : 0,
+                      ),
+                      child: IndividualGongFrame(
+                        size: clampedGongSize,
+                        child: GongButton(
+                          gongId: gong.id,
+                          note: gong.note,
+                          isPressed: caklempongVM.isGongPressed(gong.id),
+                          isHighlighted: isHighlighted,
+                          size: clampedGongSize,
+                          onPressed: () {
+                            caklempongVM.onGongPressed(gong.id);
+                            tutorialVM.onGongHit(gong.id);
+                          },
+                          onReleased: () =>
+                              caklempongVM.onGongReleased(gong.id),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               );
             }
 

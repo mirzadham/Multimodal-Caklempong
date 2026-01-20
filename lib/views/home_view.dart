@@ -14,6 +14,7 @@ class HomeView extends StatelessWidget {
       backgroundColor: AppColors.charcoal,
       body: SafeArea(
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             gradient: RadialGradient(
               center: Alignment.center,

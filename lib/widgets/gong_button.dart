@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 
 /// A single Caklempong gong button widget.
 ///
@@ -94,26 +93,49 @@ class _GongButtonState extends State<GongButton>
         builder: (context, child) {
           return Transform.scale(scale: _scaleAnimation.value, child: child);
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
+        child: Container(
           width: widget.size,
           height: widget.size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: widget.isPressed
-                ? AppColors.gongActiveGradient
-                : AppColors.gongGradient,
             boxShadow: _buildShadows(),
-            border: Border.all(
-              color: widget.isHighlighted
-                  ? Colors.white
-                  : widget.isPressed
-                  ? AppColors.maroon
-                  : AppColors.darkBronze,
-              width: widget.isHighlighted ? 4 : 3,
-            ),
           ),
-          child: const SizedBox.shrink(),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Real Gong Image
+              Image.asset(
+                'assets/images/gong.png',
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+              ),
+
+              // Pressed State Overlay (Darken)
+              if (widget.isPressed)
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withValues(alpha: 0.2),
+                  ),
+                ),
+
+              // Tutorial Highlight Overlay
+              if (widget.isHighlighted)
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -121,36 +143,13 @@ class _GongButtonState extends State<GongButton>
 
   List<BoxShadow> _buildShadows() {
     return [
-      // Outer shadow for depth
+      // Deep Drop Shadow
       BoxShadow(
-        color: Colors.black.withValues(alpha: 0.5),
-        blurRadius: widget.isPressed ? 8 : 15,
-        spreadRadius: widget.isPressed ? 1 : 2,
-        offset: Offset(widget.isPressed ? 2 : 4, widget.isPressed ? 2 : 4),
+        color: Colors.black.withValues(alpha: 0.6),
+        blurRadius: widget.isPressed ? 6 : 12,
+        spreadRadius: 0,
+        offset: Offset(0, widget.isPressed ? 4 : 8),
       ),
-      // Inner highlight (simulated with positioned gradient)
-      BoxShadow(
-        color: AppColors.lightGold.withValues(
-          alpha: widget.isPressed ? 0.2 : 0.3,
-        ),
-        blurRadius: 10,
-        spreadRadius: -5,
-        offset: const Offset(-3, -3),
-      ),
-      // Glow effect when pressed
-      if (widget.isPressed)
-        BoxShadow(
-          color: AppColors.metallicGold.withValues(alpha: 0.6),
-          blurRadius: 20,
-          spreadRadius: 3,
-        ),
-      // Highlight glow for tutorial mode
-      if (widget.isHighlighted)
-        BoxShadow(
-          color: Colors.white.withValues(alpha: 0.8),
-          blurRadius: 25,
-          spreadRadius: 5,
-        ),
     ];
   }
 }
